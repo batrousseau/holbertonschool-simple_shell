@@ -100,9 +100,18 @@ getline_status = getline(&lineptr, &n, stdin);
 /* Handle error and EOF case*/
 if (getline_status == -1)
 {
-	perror("Error with getline initialization\n");
-	free(lineptr);
-	return (NULL);
+	if (feof(stdin))
+	{
+		free(lineptr);
+		exit(EXIT_SUCCESS);
+	}
+	
+	if (ferror(stdin))
+	{
+		perror("Erreur fatale de lecture");
+		free(lineptr);
+		exit(EXIT_FAILURE);
+	}
 }
 
 /* Let's clean the line of that bad \n */
