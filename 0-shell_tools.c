@@ -100,17 +100,16 @@ getline_status = getline(&lineptr, &n, stdin);
 /* Handle error and EOF case*/
 if (getline_status == -1)
 {
-	if (feof(stdin))
-	{
-		free(lineptr);
-		exit(EXIT_SUCCESS);
-	}
-	
 	if (ferror(stdin))
 	{
 		perror("Erreur fatale de lecture");
 		free(lineptr);
 		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		free(lineptr);
+		exit(EXIT_SUCCESS);
 	}
 }
 
@@ -132,7 +131,7 @@ return (args_array);
  * Return: array of directories of the PATH
  */
 
-char **get_clean_path_directories(void)
+char **get_clean_path_directories(char **env)
 {
 	char *original_path = NULL;
 	char *path_copy = NULL;
@@ -140,7 +139,7 @@ char **get_clean_path_directories(void)
 	int array_lenght = 0;
 	int i = 0;
 
-	original_path = getenv("PATH");
+	original_path = get_path_from_env(env);
 	path_copy = _strdup(original_path);
 	array_lenght = count_double_dot(path_copy);
 	path_directories = malloc(sizeof(char *) * (array_lenght + 1));

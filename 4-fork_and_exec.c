@@ -9,22 +9,6 @@
 #include "shell.h"
 
 
-/**
- * free_everything - multiples free in one fonction
- * to optimize main shell
- * @buff: buffer for the program absolute directory
- * @prompt: array of args
- * @dir_path: all directories in the path
- */
-
-void free_everything(char *buff, char **prompt, char **dir_path)
-{
-	free(buff);
-	free(*prompt);
-	free(prompt);
-	free(*dir_path);
-	free(dir_path);
-}
 
 
 /**
