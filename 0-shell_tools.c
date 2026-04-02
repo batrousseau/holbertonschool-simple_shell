@@ -89,7 +89,7 @@ char **clean_getline(void)
 {
 char *lineptr = NULL;
 size_t n = 0L;
-size_t getline_status = 0;
+int getline_status = 0;
 char **args_array = NULL;
 
 

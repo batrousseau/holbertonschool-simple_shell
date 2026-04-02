@@ -17,7 +17,7 @@
  * Return: always 0
  */
 
-int main(int ac, char **av, char **env)
+int main(void)
 {
 	char **prompt_command = NULL, **path_directories = NULL;
 	int prompt_args = 0, how_many_dir_in_path = 0, dir_lenght = 0, i = 0;
