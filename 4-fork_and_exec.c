@@ -48,7 +48,7 @@ int fork_and_launch(char *path, char **prompt)
 	{
 		if (execve(path, prompt, NULL) == -1)
 		{
-		perror("Error:");
+		perror("Error");
 		return (-1);
 		}
 	}
@@ -57,4 +57,34 @@ int fork_and_launch(char *path, char **prompt)
 		wait(&status);
 	}
 return (0);
+}
+
+/**
+ * launch_with_dir - launch a command when the
+ * prompt is the absolute value of a dir
+ * @path_numbers: number of directory to compare the 
+ * absolute value to
+ * @prompt_commands: array of commands from the prompt
+ * Return: nothing
+ */
+
+void launch_with_dir(int path_numbers, char **prompt)
+{
+	int i = 0;
+	struct stat st;
+
+	for (i = 0; i < path_numbers; i++)
+	{
+		if (stat(prompt[i], &st) == 0)
+			{
+				
+				fork_and_launch(prompt[i], prompt);
+				free(*prompt);
+				free(prompt);
+				prompt = clean_getline();
+				free_and_exit_null_prompt(prompt);
+				break;
+			}
+	}
+
 }

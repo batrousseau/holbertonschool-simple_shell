@@ -32,6 +32,7 @@ int main(void)
 	exit_if_more_than_two(prompt_args);
 	path_directories = get_clean_path_directories();
 	how_many_dir_in_path = array_lenght(path_directories);
+	launch_with_dir(how_many_dir_in_path,prompt_command);
 		for (i = 0; i < how_many_dir_in_path; i++)
 		{
 			dir_lenght = get_dir_lenght(path_directories[i], prompt_command[0]);
