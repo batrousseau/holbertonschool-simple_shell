@@ -102,13 +102,14 @@ if (getline_status == -1)
 {
 	if (ferror(stdin))
 	{
-		perror("Erreur fatale de lecture");
+		perror("Erreur fatale de lecture\n");
 		free(lineptr);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		free(lineptr);
+		printf("\n");
 		exit(EXIT_SUCCESS);
 	}
 }
