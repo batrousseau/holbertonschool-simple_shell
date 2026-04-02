@@ -90,28 +90,23 @@ char **clean_getline(void)
 char *lineptr = NULL;
 size_t n = 0L;
 int getline_status = 0;
+int human_or_no = 4;
 char **args_array = NULL;
 
-
-/* Print the intro to the prompt*/
-printf("Bat2mort$ ");
+human_or_no = isatty(STDIN_FILENO);
+if (human_or_no == 1)
+{
+	/* Print the intro to the prompt*/
+	printf("Bat2mort$ ");
+}
 
 getline_status = getline(&lineptr, &n, stdin);
 /* Handle error and EOF case*/
 if (getline_status == -1)
 {
-	if (ferror(stdin))
-	{
-		perror("Erreur fatale de lecture\n");
-		free(lineptr);
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
 		free(lineptr);
 		printf("\n");
 		exit(EXIT_SUCCESS);
-	}
 }
 
 /* Let's clean the line of that bad \n */
