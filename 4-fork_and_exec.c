@@ -57,6 +57,11 @@ void launch_with_dir(int path_numbers, char **prompt)
 	int i = 0;
 	struct stat st;
 
+	if ( *(*prompt + i) != '/')
+	{
+		return;
+	}
+
 	for (i = 0; i < path_numbers; i++)
 	{
 		if (stat(prompt[i], &st) == 0)

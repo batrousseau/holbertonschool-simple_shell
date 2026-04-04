@@ -102,20 +102,22 @@ if (human_or_no == 1)
 
 getline_status = getline(&lineptr, &n, stdin);
 /* Handle error and EOF case*/
-if (getline_status == -1)
+if (getline_status == -1 && human_or_no == 1)
 {
-		free(lineptr);
-		printf("\n");
-		exit(EXIT_SUCCESS);
+	free(lineptr);
+	printf("\n");
+	exit(EXIT_SUCCESS);
 }
-
+if (getline_status == - 1 && human_or_no != -1)
+{
+	free(lineptr);
+	exit(EXIT_SUCCESS);
+}
 /* Let's clean the line of that bad \n */
 
 lineptr = no_new_line(lineptr);
-
 /* Now let's transform command line into an array*/
 args_array = stroke_getline(lineptr);
-
 
 return (args_array);
 }
