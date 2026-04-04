@@ -52,7 +52,7 @@ return (0);
  * Return: nothing
  */
 
-void launch_with_dir(int path_numbers, char **prompt)
+void launch_with_dir(int path_numbers, char **prompt, char **path_directories)
 {
 	int i = 0;
 	struct stat st;
@@ -71,7 +71,7 @@ void launch_with_dir(int path_numbers, char **prompt)
 				free(*prompt);
 				free(prompt);
 				prompt = clean_getline();
-				free_and_exit_null_prompt(prompt);
+				free_and_exit_null_prompt(prompt, path_directories);
 				break;
 			}
 	}

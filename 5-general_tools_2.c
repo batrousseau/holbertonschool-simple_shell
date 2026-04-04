@@ -43,13 +43,32 @@ void exit_if_more_than_two(int args)
  * free_and_exit_null_prompt - analyse a prompt
  * and if null, free the array and exit
  * @prompt: array of args
+ * @path_directories: array of pathdir
  * Return: nothing
  */
-void free_and_exit_null_prompt(char **prompt)
+void free_and_exit_null_prompt(char **prompt, char **path_directories)
 {
-	if (prompt == NULL)
+if (prompt == NULL || prompt[0] == NULL)
 	{
-		free(prompt);
+/* Si on détecte un Ctrl+D (EOF) */
+	if (prompt == NULL || prompt[0] == NULL)
+	{
+		/* On nettoie le prompt s'il reste des miettes de getline */
+		if (prompt != NULL)
+		{
+			free(prompt); /* Ou ta fonction spécifique pour free le prompt */
+		}
+
+		/* 🚨 C'est ICI qu'on règle ton dernier bug Valgrind ! 🚨 */
+		/* Grâce au "= NULL" qu'on a mis dans le main, on sait si on doit free ou pas */
+		if (path_directories != NULL)
+		{
+			free(*path_directories); /* Détruit la grosse chaîne de 1032 bytes */
+			free(path_directories);  /* Détruit le tableau de 240 bytes */
+		}
+
+		/* On ferme le programme ! */
 		exit(EXIT_SUCCESS);
+	}
 	}
 }

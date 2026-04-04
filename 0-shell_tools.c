@@ -106,12 +106,12 @@ if (getline_status == -1 && human_or_no == 1)
 {
 	free(lineptr);
 	printf("\n");
-	exit(EXIT_SUCCESS);
+	return(NULL);
 }
 if (getline_status == - 1 && human_or_no != -1)
 {
 	free(lineptr);
-	exit(EXIT_SUCCESS);
+	return(NULL);
 }
 /* Let's clean the line of that bad \n */
 
@@ -123,7 +123,7 @@ return (args_array);
 }
 
 /**
- * get_clean_path_directories - take PATH
+ * get_clean_path_directories - take env constant
  * variables and split directories to let
  * the main function build a string with commmand line
  * Return: array of directories of the PATH
@@ -152,7 +152,7 @@ char **get_clean_path_directories(char **env)
 	{
 		path_directories[i] = strtok(NULL, ":");
 	}
-	path_directories[array_lenght - 1] = NULL;
+	path_directories[array_lenght] = NULL;
 	return (path_directories);
 }
 
