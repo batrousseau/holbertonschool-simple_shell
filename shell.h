@@ -25,6 +25,6 @@ void free_everything(char *buff, char **prompt, char **dir_path);
 void exit_if_more_than_two(int args);
 void free_and_exit_null_prompt(char **prompt,char **path_directories);
 int get_dir_lenght(char *s1, char *s2);
-void launch_with_dir(int path_numbers, char **prompt, char **path_directories);
+void launch_with_dir(int path_numbers, char **prompt, char ** path_directories);
 char *get_path_from_env(char **env);
 #endif

@@ -18,19 +18,19 @@
  */
 extern char **__environ;
 
- int main(void)
+int main(void)
 {
 	char **prompt_command = NULL, **path_directories = NULL;
-	int prompt_args = 0, how_many_dir_in_path = 0, dir_lenght = 0, i = 0, j = 0;
+	int how_many_dir_in_path = 0, dir_lenght = 0, i = 0, j = 0;
 	char *buff = NULL;
 	struct stat st;
 
 	prompt_command = clean_getline();
 	free_and_exit_null_prompt(prompt_command, path_directories);
-	for (i = 0; prompt_command[0] != NULL; i++)
+	for (i = 0; prompt_command != NULL; i++)
 	{
-	prompt_args = array_lenght(prompt_command);
-	exit_if_more_than_two(prompt_args);
+	/*prompt_args = array_lenght(prompt_command);*/
+	/**exit_if_more_than_two(prompt_args);*/
 	path_directories = get_clean_path_directories(__environ);
 	how_many_dir_in_path = array_lenght(path_directories);
 	launch_with_dir(how_many_dir_in_path,prompt_command, path_directories);
@@ -59,12 +59,4 @@ extern char **__environ;
 	return (0);
 }
 
-/*
-  int main(void)
-{
-	char **prompt_command = NULL, **path_directories = NULL;
-	int prompt_args = 0, how_many_dir_in_path = 0, dir_lenght = 0, i = 0;
-	char *buff = NULL;
-	struct stat st;
-}
-*/
+
