@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-char **clean_getline(void);
+char **clean_getline(char **lineptr);
 char **stroke_getline(char *command_line);
 char *no_new_line(char *impious_line);
 void print_array(char **s);

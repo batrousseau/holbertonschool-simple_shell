@@ -19,7 +19,7 @@
 void free_everything(char *buff, char **prompt, char **dir_path)
 {
 	free(buff);
-	free(*prompt);
+	/*free(*prompt);*/
 	free(prompt);
 	free(*dir_path);
 	free(dir_path);
@@ -67,8 +67,6 @@ if (prompt == NULL || prompt[0] == NULL)
 			free(path_directories);  /* Détruit le tableau de 240 bytes */
 		}
 
-		/* On ferme le programme ! */
-		exit(EXIT_SUCCESS);
 	}
 	}
 }

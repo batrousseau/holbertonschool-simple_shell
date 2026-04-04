@@ -19,22 +19,10 @@
 
 char **stroke_getline(char *command_line)
 {
-int lenght = 0;
-int i = 0;
+int i = 0, lenght = 64;
 char **array = NULL;
 
-/* First we need to know the number of args contained in the string*/
-for (i = 0; *(command_line + i) != '\0'; i++)
-{
-	if (*(command_line + i) == ' ')
-	{
-		lenght++;
-	}
-}
-lenght = lenght + 2;
-
-/* We allocate the right number of args*/
-i = 0;
+/* Apparently we don't have to worry with memory*/
 array = malloc(sizeof(char *) * lenght);
 if (array == NULL)
 {
@@ -81,13 +69,13 @@ char *no_new_line(char *impious_line)
  * clean_getline - use getline to get
  * command line without \n at the end
  * of the instruction, providing error in
- * the rest of the file and handling and of file case
+ * the rest of the file and handling end of file case
  * Return: array of args (tks to stroke_getline)
  */
 
-char **clean_getline(void)
+char **clean_getline(char **lineptr)
 {
-char *lineptr = NULL;
+
 size_t n = 0L;
 int getline_status = 0;
 int human_or_no = 4;
@@ -100,24 +88,22 @@ if (human_or_no == 1)
 	printf("Bat2mort$ ");
 }
 
-getline_status = getline(&lineptr, &n, stdin);
+getline_status = getline(lineptr, &n, stdin);
 /* Handle error and EOF case*/
 if (getline_status == -1 && human_or_no == 1)
 {
-	free(lineptr);
 	printf("\n");
 	return(NULL);
 }
 if (getline_status == - 1 && human_or_no != -1)
 {
-	free(lineptr);
 	return(NULL);
 }
 /* Let's clean the line of that bad \n */
 
-lineptr = no_new_line(lineptr);
+*lineptr = no_new_line(*lineptr);
 /* Now let's transform command line into an array*/
-args_array = stroke_getline(lineptr);
+args_array = stroke_getline(*lineptr);
 
 return (args_array);
 }

@@ -9,8 +9,6 @@
 #include "shell.h"
 
 
-
-
 /**
  * fork_and_launch - manage the child process of the shell
  * @path: complete directory in which to find the program
@@ -76,6 +74,11 @@ int launch_with_dir(int path_numbers, char **prompt)
 	}
 return (1);
 }
+
+/**
+ * launch_with_command - take arg of the prompt and build
+ * the absolute path
+ */
 
 int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories)
 {
