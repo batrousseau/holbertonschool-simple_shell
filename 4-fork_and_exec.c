@@ -58,7 +58,7 @@ int launch_with_dir(int path_numbers, char **prompt)
 
 	for(j = 0; prompt[j] != NULL; j++)
 	{
-		if ( *(prompt[j]) != '/')
+		if ( *(prompt[j]) != '/' && *(prompt[j]) != '.')
 		{
 			return (0);
 		}
