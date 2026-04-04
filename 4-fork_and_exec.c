@@ -52,7 +52,7 @@ return (0);
  * Return: nothing
  */
 
-void launch_with_dir(int path_numbers, char **prompt, char **path_directories)
+int launch_with_dir(int path_numbers, char **prompt)
 {
 	int i = 0;
 	int j = 0;
@@ -62,7 +62,7 @@ void launch_with_dir(int path_numbers, char **prompt, char **path_directories)
 	{
 		if ( *(prompt[j]) != '/')
 		{
-			return;
+			return (0);
 		}
 
 		for (i = 0; i < path_numbers; i++)
@@ -70,12 +70,38 @@ void launch_with_dir(int path_numbers, char **prompt, char **path_directories)
 			if (stat(prompt[i], &st) == 0)
 				{
 				fork_and_launch(prompt[i], prompt);
-				free(*prompt);
-				free(prompt);
-				prompt = clean_getline();
-				free_and_exit_null_prompt(prompt, path_directories);
 				break;
 			}
 		}
 	}
+return (1);
 }
+
+int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories)
+{
+	char *buff = NULL;
+	int j = 0;
+	int dir_lenght = 0;
+	struct stat st;
+
+	for (j = 0; j < how_many_dir_in_path; j++)
+	{
+		dir_lenght = get_dir_lenght(path_directories[j], prompt_command[0]);
+		buff = malloc(sizeof(char) * dir_lenght);
+		if (buff == NULL)
+		{
+			return (-1);
+		}
+		snprintf(buff, dir_lenght, "%s/%s", path_directories[j], prompt_command[0]);
+		if (stat(buff, &st) == 0)
+		{
+			fork_and_launch(buff, prompt_command);
+			free(buff);
+			break;
+		}
+	free(buff);
+	}
+
+	return (0);
+}
+
