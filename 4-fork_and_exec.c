@@ -50,7 +50,7 @@ return (0);
  * Return: nothing
  */
 
-int launch_with_dir(int path_numbers, char **prompt)
+int launch_with_dir(char **prompt)
 {
 	int i = 0;
 	int j = 0;
@@ -61,14 +61,11 @@ int launch_with_dir(int path_numbers, char **prompt)
 		return (0);
 	}
 
-	for (i = 0; i < path_numbers; i++)
+	if (stat(prompt[i], &st) == 0)
 	{
-		if (stat(prompt[i], &st) == 0)
-		{
-			fork_and_launch(prompt[i], prompt);
-			break;
-		}
+		fork_and_launch(prompt[i], prompt);
 	}
+	
 return (1);
 }
 
