@@ -56,20 +56,17 @@ int launch_with_dir(int path_numbers, char **prompt)
 	int j = 0;
 	struct stat st;
 
-	for(j = 0; prompt[j] != NULL; j++)
+	if ( *(prompt[j]) != '/' && *(prompt[j]) != '.')
 	{
-		if ( *(prompt[j]) != '/' && *(prompt[j]) != '.')
-		{
-			return (0);
-		}
+		return (0);
+	}
 
-		for (i = 0; i < path_numbers; i++)
+	for (i = 0; i < path_numbers; i++)
+	{
+		if (stat(prompt[i], &st) == 0)
 		{
-			if (stat(prompt[i], &st) == 0)
-				{
-				fork_and_launch(prompt[i], prompt);
-				break;
-			}
+			fork_and_launch(prompt[i], prompt);
+			break;
 		}
 	}
 return (1);
