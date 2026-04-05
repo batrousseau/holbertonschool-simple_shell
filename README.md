@@ -25,6 +25,7 @@ Ce projet se concentre sur les mécanismes de base d’un shell :
 - [Compilation](#compilation)
 - [Utilisation](#utilisation)
 - [Fonctionnement](#fonctionnement)
+- [Flowchart](#flowchart)
 - [Cas pris en charge](#cas-pris-en-charge)
 - [Limites connues](#limites-connues)
 - [Exemple de session](#exemple-de-session)
@@ -182,6 +183,44 @@ Le programme suit globalement cette logique :
 ```text
 Prompt -> Lecture ligne -> Tokenisation -> Résolution exécutable -> fork() -> execve() -> wait() -> Prompt
 ```
+
+---
+
+## Flowchart
+
+```mermaid
+flowchart TD
+    A[Début de la boucle du shell] --> B{Mode interactif ?}
+    B -- Oui --> C[Afficher le prompt Bat2mort$]
+    B -- Non --> D[Lire l'entrée standard]
+    C --> D
+    D --> E[Lire la ligne avec getline]
+    E --> F{Fin de fichier ou erreur ?}
+    F -- Oui --> Z[Quitter le shell]
+    F -- Non --> G[Supprimer le caractère \n final]
+    G --> H[Découper la ligne en tokens]
+    H --> I{Commande vide ?}
+    I -- Oui --> A
+    I -- Non --> J{La commande est déjà un chemin ?}
+    J -- Oui --> K[Tenter une exécution directe]
+    J -- Non --> L[Récupérer PATH]
+    L --> M[Découper PATH en répertoires]
+    M --> N[Construire des chemins candidats]
+    N --> O[Trouver un exécutable valide]
+    O --> P[Fork du processus]
+    K --> P
+    P --> Q{Dans le processus fils ?}
+    Q -- Oui --> R[Appeler execve]
+    Q -- Non --> S[Attendre le fils avec wait]
+    R --> T{execve réussit ?}
+    T -- Oui --> U[Le programme remplace le fils]
+    T -- Non --> V[Échec d'exécution / retour d'erreur]
+    U --> S
+    V --> S
+    S --> A
+```
+
+Ce flowchart résume le comportement général du shell actuel : lecture, parsing, résolution de la commande, création d’un processus fils, exécution puis retour à la boucle principale.
 
 ---
 
