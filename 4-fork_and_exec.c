@@ -32,7 +32,7 @@ int fork_and_launch(char *path, char **prompt)
 		if (execve(path, prompt, NULL) == -1)
 		{
 		perror("Error");
-		return (-1);
+		exit(127);
 		}
 	}
 	else

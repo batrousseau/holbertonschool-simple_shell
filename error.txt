@@ -1,1 +1,3 @@
-./shell: 3: GRUMPYBAT: not found
+./shell: 0: ls: not found
+./shell: 1: pwd: not found
+./shell: 3: grumpybat: not found

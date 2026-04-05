@@ -22,7 +22,7 @@ int main(int argc, char **av)
 {
 	char **prompt_command = NULL, **path_directories = NULL;
 	int hm_dir_in_path = 0, i = 0;
-	int absolute_stat = 0, command_stat = 0;
+	int absolute_stat = 127, command_stat = 127;
 	char *lineptr = NULL;
 	int return_code = 0;
 	int zero = argc - argc;
