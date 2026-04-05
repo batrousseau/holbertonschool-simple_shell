@@ -46,7 +46,7 @@ int main(int argc, char **av)
 		}
 		if (absolute_stat != 0 && command_stat != 0)
 		{
-			return_code = print_error_message(shell_name, prompt_command, i);
+			return_code = print_error_message(shell_name, prompt_command, i + 1);
 		}
 	free_everything(lineptr, prompt_command, path_directories);
 	lineptr = NULL;
