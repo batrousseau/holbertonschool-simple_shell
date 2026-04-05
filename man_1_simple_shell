@@ -1,1 +1,144 @@
-Man pending
+.TH SIMPLE_SHELL 1 "2026-04-05" "simple_shell" "Commandes utilisateur"
+.SH NOM
+simple_shell \- interpréteur de commandes minimal en C
+.SH SYNOPSIS
+.B simple_shell
+.RI [ options ]
+.SH DESCRIPTION
+.B simple_shell
+est un shell minimaliste écrit en C.
+Il lit une ligne de commande depuis l'entrée standard, découpe cette ligne en arguments séparés par des espaces, tente d'exécuter directement la commande lorsqu'un chemin explicite est fourni, puis recherche sinon l'exécutable dans les répertoires définis par la variable d'environnement
+.BR PATH .
+
+En mode interactif, le programme affiche le prompt suivant :
+.PP
+.B Bat2mort$
+.PP
+En mode non interactif, il lit les commandes depuis l'entrée standard sans afficher de prompt.
+
+L'exécution repose sur le schéma classique suivant :
+.RS
+.IP \[bu] 2
+lecture de la ligne avec
+.BR getline (3)
+.IP \[bu] 2
+suppression du caractère de fin de ligne
+.IP \[bu] 2
+découpage des arguments avec
+.BR strtok (3)
+.IP \[bu] 2
+création d'un processus fils avec
+.BR fork (2)
+.IP \[bu] 2
+lancement du programme avec
+.BR execve (2)
+.IP \[bu] 2
+attente de fin avec
+.BR wait (2)
+.RE
+.SH FONCTIONNEMENT
+Le shell tente d'abord une exécution directe si la commande commence par
+.B /
+ou
+.BR . .
+Dans les autres cas, il parcourt les répertoires de
+.B PATH
+et construit un chemin complet pour vérifier la présence de l'exécutable avant de le lancer.
+
+Si aucune commande valide n'est trouvée, un message d'erreur est affiché et le shell poursuit sa boucle principale jusqu'à la fin de fichier.
+.SH OPTIONS
+Cette implémentation ne gère pas d'options en ligne de commande dédiées.
+.SH COMMANDES PRISES EN CHARGE
+Le projet exécute principalement des binaires externes accessibles :
+.RS
+.IP \[bu] 2
+par chemin absolu, par exemple
+.B /bin/ls
+.IP \[bu] 2
+par chemin relatif, par exemple
+.B ./programme
+.IP \[bu] 2
+par recherche dans
+.B PATH
+, par exemple
+.B ls
+.RE
+
+Les arguments simples séparés par des espaces sont transmis au programme exécuté.
+.SH EXEMPLES
+Lancer le shell en mode interactif :
+.PP
+.EX
+$ ./shell
+Bat2mort$ ls
+Bat2mort$ /bin/echo Bonjour
+Bonjour
+Bat2mort$ ./mon_programme
+.EE
+.PP
+Lancer le shell en mode non interactif :
+.PP
+.EX
+$ echo "/bin/ls" | ./shell
+.EE
+.SH CODE DE RETOUR
+Le shell renvoie le code de retour de la dernière tentative d'exécution observée dans sa boucle principale.
+Lorsqu'une commande n'est pas trouvée ou ne peut pas être exécutée, le comportement du code actuel converge vers un code de type
+.B 127
+pour les échecs de résolution de commande.
+.SH LIMITES
+Cette implémentation est volontairement simple et présente plusieurs limites connues :
+.RS
+.IP \[bu] 2
+pas de builtins documentés comme
+.B cd
+,
+.B exit
+ou
+.B env
+.IP \[bu] 2
+pas de gestion des guillemets, de l'échappement ou des variables shell
+.IP \[bu] 2
+pas de pipes, redirections ou opérateurs logiques
+.IP \[bu] 2
+découpage des arguments uniquement sur l'espace via
+.B strtok
+.IP \[bu] 2
+l'appel à
+.B execve
+est effectué avec un environnement
+.B NULL
+côté processus fils
+.IP \[bu] 2
+la taille du tableau d'arguments est fixe dans la fonction de parsing actuelle
+.RE
+.SH FICHIERS
+.TP
+.B 1-main_shell.c
+Boucle principale du shell.
+.TP
+.B 0-shell_tools.c
+Lecture, nettoyage et découpage de la ligne de commande.
+.TP
+.B 4-fork_and_exec.c
+Création du processus fils et exécution des commandes.
+.TP
+.B shell.h
+Déclarations des fonctions et inclusions communes.
+.TP
+.B man_1_simple_shell
+Man page du projet.
+.SH AUTEURS
+Voir le fichier
+.B AUTHORS
+à la racine du dépôt.
+.SH VOIR AUSSI
+.BR sh (1),
+.BR bash (1),
+.BR execve (2),
+.BR fork (2),
+.BR wait (2),
+.BR getline (3),
+.BR strtok (3),
+.BR environ (7)
+.SH NOTES
