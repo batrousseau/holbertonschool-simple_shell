@@ -20,6 +20,7 @@ int fork_and_launch(char *path, char **prompt)
 {
 	__pid_t child_pid;
 	int status;
+	int real_status;
 
 	child_pid = fork();
 	if (child_pid == -1)
@@ -37,8 +38,16 @@ int fork_and_launch(char *path, char **prompt)
 	else
 	{
 		wait(&status);
+		if (WIFEXITED(status))
+		{
+			/* 2. On extrait le VRAI code renvoyé par le programme (ex: 0, 2, 127) */
+			real_status = WEXITSTATUS(status);
+			
+			/* 3. On le renvoie au main ! */
+			return (real_status);
+		}
 	}
-return (0);
+	return (0);
 }
 
 /**
@@ -54,19 +63,20 @@ int launch_with_dir(char **prompt)
 {
 	int i = 0;
 	int j = 0;
+	int status = 127;
 	struct stat st;
 
 	if ( *(prompt[j]) != '/' && *(prompt[j]) != '.')
 	{
-		return (0);
+		return (-1);
 	}
 
 	if (stat(prompt[i], &st) == 0)
 	{
-		fork_and_launch(prompt[i], prompt);
+		status = fork_and_launch(prompt[i], prompt);
 	}
 	
-return (1);
+return (status);
 }
 
 /**
@@ -80,6 +90,7 @@ int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **
 	int j = 0;
 	int dir_lenght = 0;
 	struct stat st;
+	int status = 127;
 
 	for (j = 0; j < how_many_dir_in_path; j++)
 	{
@@ -92,13 +103,13 @@ int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **
 		snprintf(buff, dir_lenght, "%s/%s", path_directories[j], prompt_command[0]);
 		if (stat(buff, &st) == 0)
 		{
-			fork_and_launch(buff, prompt_command);
+			status = fork_and_launch(buff, prompt_command);
 			free(buff);
 			break;
 		}
 	free(buff);
 	}
 
-	return (0);
+	return (status);
 }
 

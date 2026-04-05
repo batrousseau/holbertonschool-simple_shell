@@ -36,3 +36,19 @@ void free_everything(char *buff, char **prompt, char **dir_path)
 	}
 }
 
+/**
+ * print_error_message - handle message error
+ * @prompt: command line taped by user
+ * @loop_count: how many commands entered in the shell
+ * Return : 127 because error
+ */
+
+int print_error_message(char *shell_name, char **command, int loop_count)
+{
+	if (command == NULL || shell_name == 0)
+	{
+		return (0);
+	}
+	fprintf(stderr, "%s: %d: %s: not found\n", shell_name, loop_count, command[0]);
+	return(127);
+}
