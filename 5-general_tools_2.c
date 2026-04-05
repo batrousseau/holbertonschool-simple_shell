@@ -35,18 +35,4 @@ void free_everything(char *buff, char **prompt, char **dir_path)
 		free(dir_path);
 	}
 }
-/**
- * exit_if_more_than_two - force exit if args
- * is more than two
- * @args: number of args
- * Return : Nothing
- */
-
-void exit_if_more_than_two(int args)
-{
-	if (args > 2)
-	{
-		exit(EXIT_FAILURE);
-	}
-}
 

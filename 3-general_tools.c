@@ -114,6 +114,11 @@ int count_double_dot(char *s)
 
 	int i = 0;
 	int result = 0;
+	if (s == NULL)
+	{
+		return (0);
+	}
+	
 
 	for (i = 0; *(s + i) != '\0'; i++)
 	{

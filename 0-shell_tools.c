@@ -123,6 +123,11 @@ char **get_clean_path_directories(char **env)
 	int array_lenght = 0;
 	int i = 0;
 
+	if (env[0] == NULL)
+	{
+		return (NULL);
+	}
+	
 	original_path = get_path_from_env(env);
 	path_copy = _strdup(original_path);
 	array_lenght = count_double_dot(path_copy);
