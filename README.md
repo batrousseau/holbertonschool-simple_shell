@@ -1,154 +1,308 @@
 # Simple Shell
 
-A minimal UNIX command interpreter written in C as part of the Holberton School curriculum.
+![Langage](https://img.shields.io/badge/langage-C-blue)
+![Plateforme](https://img.shields.io/badge/plateforme-Linux-lightgrey)
+![Statut](https://img.shields.io/badge/statut-projet%20d'apprentissage-orange)
 
-## Description
+Un interpréteur de commandes UNIX minimaliste écrit en **C** dans le cadre du cursus **Holberton School**.
 
-This project implements a very small shell that:
+Ce projet se concentre sur les mécanismes de base d’un shell :
+- lecture de l’entrée utilisateur
+- découpage de la commande en tokens
+- recherche des exécutables via `PATH`
+- création de processus fils avec `fork()`
+- exécution de programmes avec `execve()`
+- attente de la fin du processus fils avant d’afficher le prompt suivant
 
-- displays a custom prompt: `Bat2mort$`
-- reads a command line from standard input
-- removes the trailing newline
-- tokenizes the input on spaces
-- searches for the executable in the directories listed in `PATH`
-- creates a child process with `fork()`
-- runs the program with `execve()`
-- waits for the child process to finish before reading the next command
+---
 
-The current implementation is intentionally simple and focused on core process management.
+## Sommaire
 
-## Features
+- [Présentation](#présentation)
+- [Comportement actuel](#comportement-actuel)
+- [Structure du dépôt](#structure-du-dépôt)
+- [Prérequis](#prérequis)
+- [Compilation](#compilation)
+- [Utilisation](#utilisation)
+- [Fonctionnement](#fonctionnement)
+- [Cas pris en charge](#cas-pris-en-charge)
+- [Limites connues](#limites-connues)
+- [Exemple de session](#exemple-de-session)
+- [Objectifs pédagogiques](#objectifs-pédagogiques)
+- [Pistes d’amélioration](#pistes-damélioration)
+- [Auteurs](#auteurs)
+- [Licence](#licence)
 
-- Interactive prompt
-- Basic command parsing with space-separated arguments
-- Executable lookup through the `PATH` environment variable
-- Process creation with `fork()`
-- Program execution with `execve()`
-- Parent/child synchronization with `wait()`
+---
 
-## Current limitations
+## Présentation
 
-This shell is functional but very limited in its current state:
+`simple_shell` est un prototype de shell léger conçu pour mieux comprendre le fonctionnement interne d’un interpréteur de commandes.
 
-- it only supports commands with at most **two tokens** (`command arg`)
-- it does **not** implement shell builtins such as `cd`, `exit`, `env`, etc.
-- it does **not** handle pipes, redirections, quotes, separators, or environment expansion
-- it only looks up executables through `PATH`
-- it executes commands with `execve(path, prompt, NULL)`, so the child is launched with a `NULL` environment
-- error handling and memory management are still very minimal
+À l’heure actuelle, le shell :
+- affiche le prompt `Bat2mort$` en mode interactif
+- lit une ligne avec `getline()`
+- supprime le retour à la ligne final
+- découpe la commande sur les espaces
+- vérifie si la commande est déjà un chemin (`/bin/ls`, `./a.out`, etc.)
+- sinon, recherche l’exécutable dans les dossiers définis dans `PATH`
+- lance la commande dans un processus fils
+- attend la fin du processus avant de continuer
 
-## Repository structure
+Le projet reste volontairement compact et centré sur **l’exécution de processus** et **le parsing basique d’une ligne de commande**.
 
-- `0-shell_tools.c` - input reading, line cleanup, tokenization, and `PATH` splitting
-- `1-main_shell.c` - main shell loop and executable lookup
-- `2-debug_tools.c` - debug helper for printing arrays
-- `3-general_tools.c` - utility functions (`_strdup`, length helpers, array helpers)
-- `4-fork_and_exec.c` - process launch and grouped memory cleanup
-- `5-little_ifs.c` - small guard/exit helper functions
-- `shell.h` - function prototypes and required headers
-- `AUTHORS` - repository contributor list
-- `man_1_simple_shell` - man page placeholder
+---
 
-## Requirements
+## Comportement actuel
 
-- Ubuntu / Linux environment
-- GCC compiler
-- Standard C library and POSIX system calls
+Pour le moment, le shell se comporte comme un lanceur de commandes minimal.
+
+### Fonctionnalités implémentées
+
+- Détection du mode interactif avec `isatty()`
+- Lecture de l’entrée avec `getline()`
+- Tokenisation basique avec `strtok(..., " ")`
+- Extraction et découpage de `PATH`
+- Exécution directe d’un chemin (`/bin/ls`, `./programme`)
+- Recherche d’une commande dans `PATH`
+- Création de processus avec `fork()`
+- Exécution du programme avec `execve()`
+- Attente du processus fils avec `wait()`
+
+### Fonctionnalités non implémentées
+
+- Builtins comme `cd`, `exit` ou `env`
+- Pipes et redirections
+- Gestion des guillemets
+- Séparateurs de commandes comme `;`, `&&`, `||`
+- Expansion de variables d’environnement
+- Parsing complet comparable à celui d’un shell de production
+
+---
+
+## Structure du dépôt
+
+```text
+.
+├── 0_Exercices/
+├── 0-shell_tools.c
+├── 1-main_shell.c
+├── 2-debug_tools.c
+├── 3-general_tools.c
+├── 4-fork_and_exec.c
+├── 5-general_tools_2.c
+├── 6-shell_tools_2.c
+├── AUTHORS
+├── man_1_simple_shell
+├── README.md
+├── shell
+└── shell.h
+```
+
+### Fichiers principaux
+
+- **`1-main_shell.c`** : boucle principale du shell
+- **`0-shell_tools.c`** : lecture de l’entrée, nettoyage du `\n`, tokenisation, découpage de `PATH`
+- **`4-fork_and_exec.c`** : logique d’exécution (`fork`, `execve`, helpers de recherche)
+- **`3-general_tools.c` / `5-general_tools_2.c` / `6-shell_tools_2.c`** : fonctions utilitaires
+- **`2-debug_tools.c`** : fonctions de debug
+- **`shell.h`** : prototypes et headers nécessaires
+- **`AUTHORS`** : contributeurs du projet
+- **`man_1_simple_shell`** : ébauche de page de manuel / documentation projet
+
+---
+
+## Prérequis
+
+- Environnement Ubuntu / Linux
+- GCC
+- Bibliothèque standard du C
+- Appels système POSIX
+
+Flags recommandés :
+- `-Wall`
+- `-Wextra`
+- `-Werror`
+- `-pedantic`
+
+---
 
 ## Compilation
 
-Compile the project with:
+Compiler tous les fichiers C pour produire l’exécutable du shell :
 
 ```bash
 gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
 ```
 
-## Usage
-
-Run the shell:
+Puis lancer le programme avec :
 
 ```bash
 ./hsh
 ```
 
-You should then see:
+---
+
+## Utilisation
+
+En mode interactif, le shell affiche :
 
 ```text
 Bat2mort$
 ```
 
-Example session:
+Tu peux ensuite saisir des commandes comme :
 
 ```bash
-$ ./hsh
-Bat2mort$ ls
-AUTHORS  shell.h  0-shell_tools.c  1-main_shell.c  2-debug_tools.c  3-general_tools.c  4-fork_and_exec.c  5-little_ifs.c
-Bat2mort$ pwd
-/home/user/holbertonschool-simple_shell
+ls
+pwd
+whoami
+/bin/ls
+./programme
 ```
 
-## How it works
+---
 
-1. `clean_getline()` displays the prompt and reads a line from standard input.
-2. `no_new_line()` removes the trailing `\n`.
-3. `stroke_getline()` splits the command into tokens.
-4. `get_clean_path_directories()` gets the directories from `PATH`.
-5. The main loop rebuilds candidate executable paths such as `/bin/ls`.
-6. `stat()` checks whether the executable exists.
-7. `fork_and_launch()` forks the process and runs the command with `execve()`.
-8. The parent waits for the child before prompting again.
+## Fonctionnement
 
-## Example supported commands
+Le programme suit globalement cette logique :
 
-Commands with zero or one argument are the safest match for the current implementation, for example:
+1. `clean_getline()` lit une ligne de commande.
+2. `no_new_line()` supprime le `\n` final.
+3. `stroke_getline()` découpe la ligne en tokens.
+4. `get_clean_path_directories()` récupère `PATH` et le découpe en répertoires.
+5. `launch_with_dir()` vérifie si la commande ressemble déjà à un chemin.
+6. Sinon, `launch_with_command()` reconstruit des chemins candidats comme `/bin/ls`.
+7. `fork_and_launch()` crée un processus fils.
+8. Le fils lance `execve()`.
+9. Le parent attend la fin du processus puis recommence la boucle.
+
+### Modèle d’exécution
+
+```text
+Prompt -> Lecture ligne -> Tokenisation -> Résolution exécutable -> fork() -> execve() -> wait() -> Prompt
+```
+
+---
+
+## Cas pris en charge
+
+Les cas les plus sûrs avec le code actuel sont des commandes simples comme :
 
 ```bash
 ls
 pwd
 whoami
 ls -l
+/bin/ls
+./mon_programme
 ```
 
-## Example unsupported cases
+---
 
-The following are outside the scope of the current codebase:
+## Limites connues
+
+Le dépôt est fonctionnel, mais reste encore très simplifié.
+
+### 1. Parsing très basique
+
+Le shell découpe uniquement sur les espaces :
+
+```c
+strtok(command_line, " ")
+```
+
+Cela signifie qu’il n’y a pas de gestion de :
+- chaînes entre guillemets
+- espaces échappés
+- règles de parsing avancées
+
+### 2. Tableau de tokens de taille fixe
+
+Le tableau de tokens est alloué avec une taille fixe de 64 entrées et ne se redimensionne pas dynamiquement.
+
+### 3. Absence de builtins
+
+Les commandes qui nécessitent un comportement interne au shell ne sont pas encore implémentées, notamment :
 
 ```bash
 cd /tmp
 exit
 env
-ls -l /tmp
-ls | wc -l
-echo "hello world"
-cat file > out.txt
 ```
 
-## Learning goals
+### 4. Pas de pipes ni de redirections
 
-This project is a good introduction to:
+Les cas suivants ne sont pas pris en charge à ce stade :
 
-- command parsing
-- process creation
-- executable lookup
-- system calls in C
-- basic shell architecture
-- memory allocation and cleanup
+```bash
+ls | wc -l
+cat fichier > out.txt
+echo hello >> log.txt
+```
 
-## Authors
+### 5. Environnement non transmis au processus fils
 
-- batrousseau
+L’exécution actuelle utilise `execve(path, prompt, NULL)`, ce qui signifie que le processus fils est lancé avec un environnement `NULL` au lieu d’hériter de l’environnement du shell.
 
-## Possible improvements
+### 6. Gestion d’erreurs encore limitée
 
-- support more than two arguments
-- add builtins (`exit`, `env`, `cd`)
-- support non-interactive mode
-- preserve and pass the environment to `execve()`
-- improve error messages
-- improve memory management
-- add proper man page documentation
-- add tests
+Le projet est avant tout pédagogique et ne fournit pas encore des messages d’erreur aussi robustes qu’un shell complet.
 
-## License
+---
 
-No license is specified in this repository.
+## Exemple de session
+
+```text
+$ ./hsh
+Bat2mort$ ls
+0-shell_tools.c  1-main_shell.c  2-debug_tools.c  3-general_tools.c  4-fork_and_exec.c  5-general_tools_2.c  6-shell_tools_2.c  AUTHORS  README.md  shell.h
+Bat2mort$ pwd
+/home/user/holbertonschool-simple_shell
+Bat2mort$ /bin/echo hello
+hello
+Bat2mort$
+```
+
+---
+
+## Objectifs pédagogiques
+
+Ce projet permet de pratiquer concrètement plusieurs notions fondamentales en C et en systèmes UNIX :
+
+- manipulation de chaînes de caractères
+- allocation et libération mémoire
+- gestion de processus
+- appels système POSIX
+- recherche d’exécutables via `PATH`
+- organisation modulaire d’un projet en C
+- compréhension du cycle d’exécution d’un shell
+
+---
+
+## Pistes d’amélioration
+
+Voici les évolutions les plus naturelles pour faire progresser ce shell :
+
+- implémenter des builtins (`exit`, `env`, `cd`)
+- transmettre correctement l’environnement à `execve()`
+- améliorer la gestion des erreurs
+- gérer les espaces multiples, les guillemets et les cas limites
+- ajouter les redirections et les pipes
+- prendre en charge le mode non interactif plus complètement
+- compléter la page de manuel
+- enrichir la documentation et les tests
+
+---
+
+## Auteurs
+
+Voir le fichier **`AUTHORS`** du dépôt.
+
+---
+
+## Licence
+
+Projet académique réalisé dans le cadre de **Holberton School**.
+
+Aucune licence spécifique n’est indiquée dans le dépôt à ce stade.
