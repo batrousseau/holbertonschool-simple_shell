@@ -8,6 +8,11 @@
 #include <sys/types.h>
 #include "shell.h"
 
+/**
+ * get_path_from_env - take environ constant
+ * and look for the path. Then return the beginning
+ * of
+ */
 
 char *get_path_from_env(char **env)
 {
@@ -16,6 +21,11 @@ char *get_path_from_env(char **env)
 	char *s = NULL;
 	char *clean_path = NULL;
 
+	if (env[0] == NULL)
+	{
+		return(NULL);
+	}
+	
 	for (i = 0; *(env + i) != NULL; i++)
 	{
 		s = *(env + i);
@@ -40,5 +50,10 @@ char *get_path_from_env(char **env)
 			
 		}
 	}
+if (clean_path == NULL || clean_path[0] == '\0')
+{
+	return(NULL);
+}
+
 return(clean_path);
 }

@@ -129,6 +129,11 @@ char **get_clean_path_directories(char **env)
 	}
 	
 	original_path = get_path_from_env(env);
+	if (original_path == NULL)
+	{
+		return (NULL);
+	}
+	
 	path_copy = _strdup(original_path);
 	array_lenght = count_double_dot(path_copy);
 	path_directories = malloc(sizeof(char *) * (array_lenght + 1));
