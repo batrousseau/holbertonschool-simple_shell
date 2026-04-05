@@ -18,11 +18,22 @@
 
 void free_everything(char *buff, char **prompt, char **dir_path)
 {
+/* On nettoie la ligne d'origine (free(NULL) ne fait rien, c'est safe) */
 	free(buff);
-	/*free(*prompt);*/
-	free(prompt);
-	free(*dir_path);
-	free(dir_path);
+	
+	/* On nettoie le tableau découpé par strtok */
+	if (prompt != NULL)
+	{
+		free(prompt);
+	}
+
+	/* Le fameux bouclier anti-segfault pour le PATH */
+	if (dir_path != NULL)
+	{
+		free(*dir_path); 
+/* Maintenant on est SÛR que dir_path n'est pas NULL, on peut utiliser l'étoile ! */
+		free(dir_path);
+	}
 }
 /**
  * exit_if_more_than_two - force exit if args
@@ -39,34 +50,3 @@ void exit_if_more_than_two(int args)
 	}
 }
 
-/**
- * free_and_exit_null_prompt - analyse a prompt
- * and if null, free the array and exit
- * @prompt: array of args
- * @path_directories: array of pathdir
- * Return: nothing
- */
-void free_and_exit_null_prompt(char **prompt, char **path_directories)
-{
-if (prompt == NULL || prompt[0] == NULL)
-	{
-/* Si on détecte un Ctrl+D (EOF) */
-	if (prompt == NULL || prompt[0] == NULL)
-	{
-		/* On nettoie le prompt s'il reste des miettes de getline */
-		if (prompt != NULL)
-		{
-			free(prompt); /* Ou ta fonction spécifique pour free le prompt */
-		}
-
-		/* 🚨 C'est ICI qu'on règle ton dernier bug Valgrind ! 🚨 */
-		/* Grâce au "= NULL" qu'on a mis dans le main, on sait si on doit free ou pas */
-		if (path_directories != NULL)
-		{
-			free(*path_directories); /* Détruit la grosse chaîne de 1032 bytes */
-			free(path_directories);  /* Détruit le tableau de 240 bytes */
-		}
-
-	}
-	}
-}

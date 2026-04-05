@@ -23,7 +23,6 @@ int array_lenght(char **array);
 int fork_and_launch(char *path, char **prompt);
 void free_everything(char *buff, char **prompt, char **dir_path);
 void exit_if_more_than_two(int args);
-void free_and_exit_null_prompt(char **prompt,char **path_directories);
 int get_dir_lenght(char *s1, char *s2);
 int launch_with_dir(char **prompt);
 int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories);
