@@ -27,9 +27,12 @@ int main(int argc, char **av)
 	int return_code = 0;
 	int zero = argc - argc;
 	char *shell_name = av[zero];
+	int build_in_status = 0;
 
 	
 	prompt_command = clean_getline(&lineptr);
+	build_in_status = is_build_in(prompt_command);
+	return_code = build_in_centralizer(build_in_status);
 	
 	for (i = 0; prompt_command != NULL; i++)
 	{
@@ -52,6 +55,8 @@ int main(int argc, char **av)
 	lineptr = NULL;
 	path_directories = NULL;
 	prompt_command = clean_getline(&lineptr);
+	build_in_status = is_build_in(prompt_command);
+	return_code = build_in_centralizer(build_in_status);
 	}
 	free(lineptr);
 	lineptr = NULL;
