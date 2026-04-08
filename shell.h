@@ -28,8 +28,8 @@ int launch_with_dir(char **prompt);
 int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories);
 char *get_path_from_env(char **env);
 int is_build_in(char **prompt_command);
-int build_in_centralizer(int build_int);
-int exit_build_in();
+int build_in_centralizer(int build_int, char **prompt_command, char *lineptr);
+int exit_build_in(char **prompt_command, char *lineptr);
 int env_build_in();
 int _strcmp(char *s1, char *s2);
 #endif

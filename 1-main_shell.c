@@ -29,16 +29,15 @@ int main(int argc, char **av)
 	char *shell_name = av[zero];
 	int build_in_status = 0;
 
-	
 	prompt_command = clean_getline(&lineptr);
-	build_in_status = is_build_in(prompt_command);
-	return_code = build_in_centralizer(build_in_status);
-	
+
 	for (i = 0; prompt_command != NULL; i++)
 	{
 		return_code = 0;
 		if (prompt_command[0] != NULL)
 		{
+			build_in_status = is_build_in(prompt_command);
+			return_code = build_in_centralizer(build_in_status, &prompt_command[0], lineptr);
 			path_directories = get_clean_path_directories(__environ);
 			hm_dir_in_path = array_lenght(path_directories);
 			absolute_stat = launch_with_dir(prompt_command);
@@ -47,7 +46,7 @@ int main(int argc, char **av)
 				command_stat = launch_with_command(hm_dir_in_path, prompt_command, path_directories);
 			}
 		}
-		if (absolute_stat != 0 && command_stat != 0)
+		if (absolute_stat != 0 && command_stat != 0 && build_in_status == 127)
 		{
 			return_code = print_error_message(shell_name, prompt_command, i + 1);
 		}
@@ -56,7 +55,7 @@ int main(int argc, char **av)
 	path_directories = NULL;
 	prompt_command = clean_getline(&lineptr);
 	build_in_status = is_build_in(prompt_command);
-	return_code = build_in_centralizer(build_in_status);
+	return_code = build_in_centralizer(build_in_status, prompt_command, lineptr);
 	}
 	free(lineptr);
 	lineptr = NULL;
