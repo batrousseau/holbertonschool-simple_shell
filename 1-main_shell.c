@@ -37,7 +37,7 @@ int main(int argc, char **av)
 			build_in_status = is_build_in(prompt_command);
 			if (build_in_status != 127)
 			{
-				return_code = build_in_centralizer(build_in_status, &prompt_command[0], lineptr);
+				return_code = build_in_centralizer(build_in_status, &prompt_command[0], lineptr, return_code);
 			}
 			path_directories = get_clean_path_directories(__environ);
 			hm_dir_in_path = array_lenght(path_directories);

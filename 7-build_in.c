@@ -53,7 +53,7 @@ int is_build_in(char **prompt_command)
  * Return: Nothing
  * */
 
-int build_in_centralizer(int build_int, char **prompt_command, char *lineptr)
+int build_in_centralizer(int build_int, char **prompt_command, char *lineptr, int actual_return)
 {
 	int exit_return = 0;
 	int env_return = 0;
@@ -65,7 +65,7 @@ int build_in_centralizer(int build_int, char **prompt_command, char *lineptr)
 
 	if (build_int == 1 && prompt_command != NULL && lineptr != NULL)
 	{
-		exit_return = exit_build_in(prompt_command, lineptr);
+		exit_return = exit_build_in(prompt_command, lineptr, actual_return);
 		return (exit_return);
 	}
 
@@ -82,7 +82,7 @@ return (127);
  * Return: Nothing for the moment
  */
 
-int exit_build_in(char **prompt_command, char *lineptr)
+int exit_build_in(char **prompt_command, char *lineptr, int actual_return)
 {
 int status_arg = 0;
 
@@ -98,6 +98,10 @@ if (prompt_command[1] != NULL && prompt_command[1][1] != '\0')
 	status_arg = status_arg * 10 + (prompt_command[1][1] + 48);
 }
 
+else
+{
+	status_arg = actual_return;
+}
 
 free(prompt_command);
 free(lineptr);
