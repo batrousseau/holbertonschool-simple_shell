@@ -115,7 +115,7 @@ exit(status_arg);
 
 int env_build_in()
 {
-	if(__environ == NULL)
+	if(__environ == NULL && __environ[0] != NULL)
 	{
 		return (127);
 	}
