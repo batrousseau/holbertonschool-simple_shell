@@ -90,12 +90,12 @@ int status_arg = 0;
 if (prompt_command[1] != NULL && prompt_command[1][0] != '\0')
 {
 	/* if it's only one number, let's strore it*/
-	status_arg = prompt_command[1][0] + 48;
-}
-if (prompt_command[1] != NULL && prompt_command[1][1] != '\0')
-{
-	/* if there is two number I must convert it */
-	status_arg = status_arg * 10 + (prompt_command[1][1] + 48);
+	status_arg = prompt_command[1][0] - 48;
+	if (prompt_command[1][1] != '\0')
+	{
+		/* if there is two number I must convert it */
+		status_arg = status_arg * 10 + (prompt_command[1][1] - 48);
+	}
 }
 
 else

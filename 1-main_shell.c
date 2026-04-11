@@ -39,9 +39,12 @@ int main(int argc, char **av)
 			{
 				return_code = build_in_centralizer(build_in_status, &prompt_command[0], lineptr, return_code);
 			}
+			if (return_code != 127)
+			{
 			path_directories = get_clean_path_directories(__environ);
 			hm_dir_in_path = array_lenght(path_directories);
 			return_code = launch_with_dir(prompt_command);
+			}
 			if (return_code == -1 && path_directories != NULL)
 			{
 				return_code = launch_with_command(hm_dir_in_path, prompt_command, path_directories);
