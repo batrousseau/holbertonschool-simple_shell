@@ -23,7 +23,7 @@ int main(int argc, char **av)
 	char **prompt_command = NULL, **path_directories = NULL;
 	int hm_dir_in_path = 0, i = 0;
 	char *lineptr = NULL;
-	int return_code = 40;
+	int return_code = 0;
 	int zero = argc - argc;
 	char *shell_name = av[zero];
 	int build_in_status = 0;
