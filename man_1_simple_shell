@@ -1,87 +1,147 @@
 SIMPLE_SHELL(1)
 
 NOM
-    simple_shell - shell Unix minimal en ligne de commande
+    simple_shell - interpréteur de commandes UNIX minimal écrit en C
 
 SYNOPSIS
-    simple_shell
+    ./shell
 
 DESCRIPTION
-    simple_shell est un interpréteur de commandes minimal écrit en C.
+    simple_shell est un shell minimal capable de lire une ligne de commande,
+    de la découper en arguments, de reconnaître certains builtins, puis
+    d'exécuter soit un chemin fourni directement, soit une commande retrouvée
+    dans les répertoires du PATH.
 
-    Il lit une ligne depuis l'entrée standard, découpe la commande en arguments,
-    cherche l'exécutable demandé, puis lance ce programme dans un processus fils.
-    Le shell attend ensuite la fin du processus avant d'afficher une nouvelle invite.
-
-    En mode interactif, le prompt affiché est :
+    En mode interactif, le programme affiche le prompt :
         Bat2mort$
 
-    Le programme peut aussi être utilisé en mode non interactif, par exemple avec
-    un pipe ou une redirection d'entrée.
+    En mode non interactif, il lit simplement depuis l'entrée standard.
 
-FONCTIONNEMENT
-    Le comportement observé dans l'implémentation actuelle est le suivant :
+COMPORTEMENT
+    Le comportement est le suivant :
 
-    1. Lecture de la ligne avec getline(3)
-    2. Suppression du caractère de fin de ligne \n si présent
-    3. Découpage de la ligne avec strtok(3), en utilisant l'espace simple comme séparateur
-    4. Si la commande commence par / ou ., le shell tente une exécution directe
-    5. Sinon, le shell récupère PATH, découpe ses répertoires, puis essaie de construire
-       un chemin complet vers l'exécutable
-    6. L'exécution est réalisée via fork(2) et execve(2)
-    7. Le parent attend le fils avec wait(2), puis récupère le code de retour
+    1. Le shell lit une ligne avec getline().
+    2. Le caractère de fin de ligne '\n' est supprimé.
+    3. La ligne est découpée avec strtok() en utilisant l'espace simple comme
+       séparateur.
+    4. Si la commande correspond à un builtin, le builtin est exécuté.
+    5. Si la commande commence par '/' ou '.', le shell tente une exécution
+       directe avec ce chemin.
+    6. Sinon, le shell récupère PATH depuis l'environnement, découpe ses
+       répertoires, construit successivement des chemins complets et vérifie
+       leur existence avec stat().
+    7. Si un exécutable est trouvé, le shell crée un processus fils avec
+       fork(), puis exécute la commande avec execve().
+    8. Le processus parent attend la fin du fils et récupère son code retour.
+    9. Si la commande n'est pas trouvée, un message d'erreur est affiché sur
+       stderr.
+
+BUILTINS
+    Les builtins réellement présents dans le code actuel sont :
+
+    exit [statut]
+        Termine le shell.
+
+        Si un argument est fourni, le shell l'utilise comme code de sortie.
+        L'implémentation actuelle convertit uniquement un ou deux caractères
+        numériques. Elle ne valide pas complètement les entrées non numériques
+        et ne gère pas proprement les codes de sortie plus longs.
+
+        Si aucun argument n'est fourni, le shell quitte avec le code retour de
+        la dernière commande exécutée.
+
+    env
+        Affiche l'environnement courant en parcourant env.
+
+RECHERCHE DE COMMANDE
+    Pour une commande simple comme ls, le shell :
+
+    - récupère PATH depuis l'environnement ;
+    - découpe PATH sur ':' ;
+    - concatène chaque répertoire avec le nom de la commande ;
+    - teste l'existence du fichier avec stat() ;
+    - exécute le premier chemin valide trouvé.
+
+    Pour une commande déjà fournie comme chemin, par exemple /bin/ls ou
+    ./programme, le shell tente directement son exécution.
+
+GESTION DES ERREURS
+    Lorsqu'une commande n'est pas trouvée, le shell affiche un message du type :
+
+        nom_du_shell: numéro_de_commande: commande: not found
+
+    Le code de retour renvoyé dans ce cas est 127.
 
 EXEMPLES
-    Mode interactif :
+    Lancement interactif :
+
         $ ./shell
+        Bat2mort$ env
+        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        ...
         Bat2mort$ /bin/ls
-        0-shell_tools.c 1-main_shell.c 4-fork_and_exec.c shell.h
+        0-shell_tools.c  1-main_shell.c  7-build_in.c  shell.h
         Bat2mort$ ls
-        0-shell_tools.c 1-main_shell.c 4-fork_and_exec.c shell.h
-        Bat2mort$ /bin/pwd
+        0-shell_tools.c  1-main_shell.c  7-build_in.c  shell.h
+        Bat2mort$ exit
+
+    Lancement non interactif :
+
+        $ echo "/bin/pwd" | ./shell
         /home/user/holbertonschool-simple_shell
 
-    Mode non interactif :
-        $ echo "/bin/ls" | ./shell
-        0-shell_tools.c 1-main_shell.c 4-fork_and_exec.c shell.h
-
 CODE DE RETOUR
-    Le shell renvoie généralement le code de retour de la dernière commande exécutée.
+    Le shell renvoie le code de retour de la dernière commande exécutée.
 
-    Si la commande ne peut pas être trouvée ou exécutée, le comportement observé
-    conduit souvent à un code de retour de type 127, qui correspond classiquement
-    à une commande introuvable.
+    Cas observables dans l'implémentation actuelle :
 
-LIMITES
-    - Le découpage des arguments repose sur strtok(3) avec le séparateur " ".
-      Les guillemets, tabulations, échappements et syntaxes avancées du shell
-      ne sont pas gérés.
-    - Aucune gestion complète des builtins classiques n'est visible dans le
-      comportement principal documenté ici.
-    - L'exécution utilise actuellement execve(..., NULL), ce qui signifie que
-      le programme lancé ne reçoit pas explicitement l'environnement du shell.
-    - Les fonctionnalités avancées d'un shell Unix standard ne sont pas prises
-      en charge : pipes, redirections complexes, variables shell, substitutions,
-      historique, etc.
+    - 0 si la commande ou le builtin réussit ;
+    - 127 si la commande n'est pas trouvée ou si execve() échoue dans le fils ;
+    - le code spécifique renvoyé par le programme exécuté dans les autres cas.
 
-FICHIERS
-    1-main_shell.c
-        Boucle principale du shell.
-
+FICHIERS PRINCIPAUX
     0-shell_tools.c
-        Lecture de ligne, nettoyage de l'entrée et découpage des arguments.
+        Lecture de l'entrée, suppression du '\n', tokenisation et découpage
+        du PATH.
+
+    1-main_shell.c
+        Boucle principale du shell et orchestration globale.
+
+    3-general_tools.c
+        Fonctions utilitaires générales : duplication de chaîne, longueur,
+        comptage et outils sur tableaux.
 
     4-fork_and_exec.c
-        Création du processus fils et exécution de la commande.
+        Exécution des commandes externes avec fork(), execve() et wait().
+
+    5-general_tools_2.c
+        Libération mémoire, comparaison de chaînes et affichage des erreurs.
+
+    6-shell_tools_2.c
+        Extraction de PATH depuis l'environnement.
+
+    7-build_in.c
+        Implémentation des builtins exit et env.
 
     shell.h
-        Prototypes, inclusions et structure générale du projet.
+        Prototypes et inclusions nécessaires au projet.
+
+LIMITES
+    Le shell reste volontairement simple. Les limites visibles dans le code
+    actuel incluent notamment :
+
+    - tokenisation basée uniquement sur l'espace simple ;
+    - absence de gestion des guillemets et des échappements ;
+    - absence de pipes, redirections et séparateurs de commandes ;
+    - absence de builtin cd ;
+    - tableau d'arguments de taille fixe à 64 entrées ;
+    - exécution des commandes externes avec execve(path, argv, NULL), donc sans
+      transmission explicite de l'environnement au programme fils ;
+    - parsing numérique limité pour exit.
 
 AUTEURS
-    Projet réalisé dans le cadre du cursus Holberton.
-
-    Auteurs du dépôt :
-        batrousseau et contributeurs éventuels du projet
+    Voir le fichier AUTHORS du dépôt.
 
 VOIR AUSSI
-    sh(1), bash(1), getline(3), strtok(3), fork(2), execve(2), wait(2), stat(2)
+    sh(1), bash(1), getline(3), strtok(3), fork(2), execve(2), wait(2),
+    stat(2), environ(7)
