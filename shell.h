@@ -22,14 +22,14 @@ int count_double_dot(char *s);
 int array_lenght(char **array);
 int fork_and_launch(char *path, char **prompt);
 void free_everything(char *buff, char **prompt, char **dir_path);
-int print_error_message(char *shell_name, char **command, int loop_count);
+int print_error_message(char *shell_name, char **command, int loop_cnt);
 int get_dir_lenght(char *s1, char *s2);
 int launch_with_dir(char **prompt);
-int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories);
+int launch_with_command(int hmdir_in_path, char **prompt_cmd, char **path_dir);
 char *get_path_from_env(char **env);
 int is_build_in(char **prompt_command);
-int build_in_centralizer(int build_int, char **prompt_command, char *lineptr, int actual_return);
+int build_ctrler(int build, char **prompt_cmd, char *lineptr, int actual_rtn);
 int exit_build_in(char **prompt_command, char *lineptr, int actual_return);
-int env_build_in();
+int env_build_in(void);
 int _strcmp(char *s1, char *s2);
 #endif

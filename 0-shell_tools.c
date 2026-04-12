@@ -70,6 +70,7 @@ char *no_new_line(char *impious_line)
  * command line without \n at the end
  * of the instruction, providing error in
  * the rest of the file and handling end of file case
+ * @lineptr: original pointer from command
  * Return: array of args (tks to stroke_getline)
  */
 
@@ -93,11 +94,11 @@ getline_status = getline(lineptr, &n, stdin);
 if (getline_status == -1 && human_or_no == 1)
 {
 	printf("\n");
-	return(NULL);
+	return (NULL);
 }
-if (getline_status == - 1 && human_or_no != -1)
+if (getline_status == -1 && human_or_no != -1)
 {
-	return(NULL);
+	return (NULL);
 }
 /* Let's clean the line of that bad \n */
 
@@ -112,6 +113,7 @@ return (args_array);
  * get_clean_path_directories - take env constant
  * variables and split directories to let
  * the main function build a string with commmand line
+ * @env: array of env
  * Return: array of directories of the PATH
  */
 
@@ -127,13 +129,13 @@ char **get_clean_path_directories(char **env)
 	{
 		return (NULL);
 	}
-	
+
 	original_path = get_path_from_env(env);
 	if (original_path == NULL)
 	{
 		return (NULL);
 	}
-	
+
 	path_copy = _strdup(original_path);
 	array_lenght = count_double_dot(path_copy);
 	path_directories = malloc(sizeof(char *) * (array_lenght + 1));

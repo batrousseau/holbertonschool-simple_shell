@@ -42,7 +42,7 @@ int fork_and_launch(char *path, char **prompt)
 		{
 			/* 2. On extrait le VRAI code renvoyé par le programme (ex: 0, 2, 127) */
 			real_status = WEXITSTATUS(status);
-			
+
 			/* 3. On le renvoie au main ! */
 			return (real_status);
 		}
@@ -53,10 +53,8 @@ int fork_and_launch(char *path, char **prompt)
 /**
  * launch_with_dir - launch a command when the
  * prompt is the absolute value of a dir
- * @path_numbers: number of directory to compare the 
- * absolute value to
- * @prompt_commands: array of commands from the prompt
- * Return: nothing
+ * @prompt: array of commands from the prompt
+ * Return: Status of execution
  */
 
 int launch_with_dir(char **prompt)
@@ -66,7 +64,7 @@ int launch_with_dir(char **prompt)
 	int status = 127;
 	struct stat st;
 
-	if ( *(prompt[j]) != '/' && *(prompt[j]) != '.')
+	if (*(prompt[j]) != '/' && *(prompt[j]) != '.')
 	{
 		return (-1);
 	}
@@ -75,16 +73,20 @@ int launch_with_dir(char **prompt)
 	{
 		status = fork_and_launch(prompt[i], prompt);
 	}
-	
+
 return (status);
 }
 
 /**
  * launch_with_command - take arg of the prompt and build
  * the absolute path
+ * @hmdir_in_path: number of directories
+ * @prompt_cmd: prompt command
+ * @path_dir: array of dir of the path
+ * Return: Status
  */
 
-int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **path_directories)
+int launch_with_command(int hmdir_in_path, char **prompt_cmd, char **path_dir)
 {
 	char *buff = NULL;
 	int j = 0;
@@ -92,18 +94,18 @@ int launch_with_command(int how_many_dir_in_path, char **prompt_command, char **
 	struct stat st;
 	int status = 127;
 
-	for (j = 0; j < how_many_dir_in_path; j++)
+	for (j = 0; j < hmdir_in_path; j++)
 	{
-		dir_lenght = get_dir_lenght(path_directories[j], prompt_command[0]);
+		dir_lenght = get_dir_lenght(path_dir[j], prompt_cmd[0]);
 		buff = malloc(sizeof(char) * dir_lenght);
 		if (buff == NULL)
 		{
 			return (-1);
 		}
-		snprintf(buff, dir_lenght, "%s/%s", path_directories[j], prompt_command[0]);
+		snprintf(buff, dir_lenght, "%s/%s", path_dir[j], prompt_cmd[0]);
 		if (stat(buff, &st) == 0)
 		{
-			status = fork_and_launch(buff, prompt_command);
+			status = fork_and_launch(buff, prompt_cmd);
 			free(buff);
 			break;
 		}

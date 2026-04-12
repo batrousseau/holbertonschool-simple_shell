@@ -20,7 +20,7 @@ void free_everything(char *buff, char **prompt, char **dir_path)
 {
 /* On nettoie la ligne d'origine (free(NULL) ne fait rien, c'est safe) */
 	free(buff);
-	
+
 	/* On nettoie le tableau découpé par strtok */
 	if (prompt != NULL)
 	{
@@ -30,27 +30,28 @@ void free_everything(char *buff, char **prompt, char **dir_path)
 	/* Le fameux bouclier anti-segfault pour le PATH */
 	if (dir_path != NULL)
 	{
-		free(*dir_path); 
-/* Maintenant on est SÛR que dir_path n'est pas NULL, on peut utiliser l'étoile ! */
+		free(*dir_path);
+/* Maintenant on sait que dir_path n'est pas NULL, on utilise l'étoile ! */
 		free(dir_path);
 	}
 }
 
 /**
  * print_error_message - handle message error
- * @prompt: command line taped by user
- * @loop_count: how many commands entered in the shell
- * Return : 127 because error
+ * @shell_name: name of the programm
+ * @command: command line taped by user
+ * @loop_cnt: how many commands entered in the shell
+ * Return: 127 because error
  */
 
-int print_error_message(char *shell_name, char **command, int loop_count)
+int print_error_message(char *shell_name, char **command, int loop_cnt)
 {
 	if (command == NULL || shell_name == 0)
 	{
 		return (0);
 	}
-	fprintf(stderr, "%s: %d: %s: not found\n", shell_name, loop_count, command[0]);
-	return(127);
+	fprintf(stderr, "%s: %d: %s: not found\n", shell_name, loop_cnt, command[0]);
+	return (127);
 }
 
 /**

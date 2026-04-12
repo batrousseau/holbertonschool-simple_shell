@@ -13,7 +13,7 @@
  * is_build_in - Analyse if the command passed through the terminal
  * is a build in
  * @prompt_command: array of command
- * Return : 127 if not build_in or NULL, 1 if exit, 2 if env
+ * Return: 127 if not build_in or NULL, 1 if exit, 2 if env
  */
 
 int is_build_in(char **prompt_command)
@@ -22,20 +22,19 @@ int is_build_in(char **prompt_command)
 	char *env = "env";
 	int exit_result = -1;
 	int env_result = -1;
-	
 
 	if (prompt_command == NULL || prompt_command[0] == NULL)
 	{
 		return (127);
 	}
-	
+
 	exit_result = _strcmp(exit, prompt_command[0]);
 
 	if (exit_result == 0)
 	{
 		return (1);
 	}
-	
+
 	env_result = _strcmp(env, prompt_command[0]);
 
 	if (env_result == 0)
@@ -43,43 +42,50 @@ int is_build_in(char **prompt_command)
 		return (2);
 	}
 
-	return(127);
+	return (127);
 }
 
 /**
- * build_in_centralizer - calls the proper function
+ * build_ctrler - calls the proper function
  * depending on what int it receives
- * @build_int : an int indicating the code
- * Return: Nothing
- * */
+ * @build : an int indicating the code
+ * @prompt_cmd: array of args
+ * @lineptr: original string from terminal
+ * @actual_rtn: status of last command
+ * Return: status of command
+ */
 
-int build_in_centralizer(int build_int, char **prompt_command, char *lineptr, int actual_return)
+int build_ctrler(int build, char **prompt_cmd, char *lineptr, int actual_rtn)
 {
 	int exit_return = 0;
 	int env_return = 0;
 
-	if(build_int == 127)
+	if (build == 127)
 	{
 		return (0);
 	}
 
-	if (build_int == 1 && prompt_command != NULL && lineptr != NULL)
+	if (build == 1 && prompt_cmd != NULL && lineptr != NULL)
 	{
-		exit_return = exit_build_in(prompt_command, lineptr, actual_return);
+		exit_return = exit_build_in(prompt_cmd, lineptr, actual_rtn);
 		return (exit_return);
 	}
 
-	if (build_int == 2)
+	if (build == 2)
 	{
 		env_return = env_build_in();
 		return (env_return);
 	}
-	
+
 return (127);
 }
 
-/** exit_build_in - exit function
- * Return: Nothing for the moment
+/**
+ * exit_build_in - exit function
+ * @prompt_command: array of args
+ * @lineptr: orginial strings
+ * @actual_return: return of previous command
+ * Return: exit status
  */
 
 int exit_build_in(char **prompt_command, char *lineptr, int actual_return)
@@ -110,15 +116,15 @@ exit(status_arg);
 
 /**
  * env_build_in - env function
- * Return: Nothing for the moment
+ * Return: status of command
  */
 
-int env_build_in()
+int env_build_in(void)
 {
-	if(__environ == NULL && __environ[0] != NULL)
+	if (__environ == NULL && __environ[0] != NULL)
 	{
 		return (127);
 	}
 	print_array(__environ);
-	return(0);
+	return (0);
 }

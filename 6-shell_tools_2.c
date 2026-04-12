@@ -11,7 +11,9 @@
 /**
  * get_path_from_env - take environ constant
  * and look for the path. Then return the beginning
- * of
+ * of the path
+ * @env: environ constant
+ * Return: PATH as a string
  */
 
 char *get_path_from_env(char **env)
@@ -23,9 +25,9 @@ char *get_path_from_env(char **env)
 
 	if (env[0] == NULL)
 	{
-		return(NULL);
+		return (NULL);
 	}
-	
+
 	for (i = 0; *(env + i) != NULL; i++)
 	{
 		s = *(env + i);
@@ -45,17 +47,17 @@ char *get_path_from_env(char **env)
 				{
 					clean_path = (s + 5);
 				}
-				
+
 			}
-			
+
 		}
 	}
 if (clean_path == NULL || clean_path[0] == '\0')
 {
-	return(NULL);
+	return (NULL);
 }
 
-return(clean_path);
+return (clean_path);
 }
 
 
